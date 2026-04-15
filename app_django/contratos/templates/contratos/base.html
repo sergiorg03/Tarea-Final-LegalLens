@@ -1,0 +1,56 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}LegalLens{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'contratos/css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <a class="brand" href="{% url 'subir_contrato' %}">
+            <span class="logo" aria-hidden="true"></span>
+            <span>LegalLens</span>
+          </a>
+          <nav class="nav" aria-label="Navegación">
+            <a href="{% url 'subir_contrato' %}">Subir contrato</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li class="msg {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        <div class="page-head">
+          <div>
+            <h1>{% block page_title %}LegalLens{% endblock %}</h1>
+            {% block page_subtitle %}{% endblock %}
+          </div>
+          {% block page_actions %}{% endblock %}
+        </div>
+
+        <section class="card">
+          {% block content %}{% endblock %}
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>© {% now "Y" %} LegalLens</div>
+          <div>{% block footer_right %}Analiza contratos de forma rápida.{% endblock %}</div>
+        </div>
+      </footer>
+    </div>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

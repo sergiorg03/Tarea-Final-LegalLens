@@ -1,35 +1,15 @@
 # =========================
-# VARIABLES DE ENTORNO
+# GIT
 # =========================
-.env
-.env.*
-!.env.example
+.git
+.gitignore
 
 # =========================
-# PYTHON
+# PYTHON CACHE
 # =========================
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-
-# Distribución / build
-build/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-*.manifest
-*.spec
 
 # =========================
 # ENTORNOS VIRTUALES
@@ -38,7 +18,13 @@ wheels/
 venv/
 env/
 ENV/
-virtualenv/
+
+# =========================
+# VARIABLES DE ENTORNO
+# =========================
+.env
+.env.*
+!.env.example
 
 # =========================
 # TESTING / COVERAGE
@@ -49,33 +35,31 @@ virtualenv/
 htmlcov/
 .tox/
 .cache/
-.hypothesis/
-coverage.xml
-*.cover
 
 # =========================
-# LOGS / DATABASES
+# LOGS / TEMP
 # =========================
 *.log
 logs/
-*.sqlite3
-*.db
+tmp/
+temp/
+*.tmp
 
 # =========================
-# FASTAPI
+# IDEs / EDITORS
 # =========================
-*.pid
-uvicorn.log
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # =========================
-# DOCKER
+# NOTEBOOKS
 # =========================
-docker-compose.override.yml
-*.tar
-*.gz
+.ipynb_checkpoints/
 
 # =========================
-# AI / MACHINE LEARNING
+# DATOS / MODELOS IA
 # =========================
 models/
 checkpoints/
@@ -94,25 +78,10 @@ runs/
 *.pickle
 
 # =========================
-# CACHE / TEMP FILES
+# BASES DE DATOS
 # =========================
-.cache/
-tmp/
-temp/
-*.tmp
-
-# =========================
-# JUPYTER
-# =========================
-.ipynb_checkpoints/
-
-# =========================
-# IDEs / EDITORS
-# =========================
-.vscode/
-.idea/
-*.swp
-*.swo
+*.sqlite3
+*.db
 
 # =========================
 # SISTEMA

@@ -1,0 +1,33 @@
+{% extends "contratos/base.html" %}
+
+{% block title %}Contrato · LegalLens{% endblock %}
+
+{% block page_title %}Contrato: {{ contrato.nombre }}{% endblock %}
+{% block page_subtitle %}
+  <p>
+    Subido el {{ contrato.fecha_subida|date:"d/m/Y H:i" }}.
+    {% if contrato.archivo_pdf %}
+      <a class="btn" href="{{ contrato.archivo_pdf.url }}" target="_blank" rel="noopener">Ver PDF</a>
+    {% endif %}
+  </p>
+{% endblock %}
+
+{% block content %}
+  <div style="display: grid; gap: 12px;">
+    <div>
+      <strong>Nombre:</strong> {{ contrato.nombre }}
+    </div>
+    <div>
+      <strong>Resultado IA:</strong>
+      <div style="margin-top: 8px; white-space: pre-wrap; line-height: 1.5;">
+        {{ contrato.resultado_ia|default:"(Sin resultado todavía)" }}
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+      <a class="btn" href="{% url 'subir_contrato' %}">Subir otro</a>
+      {% if contrato.archivo_pdf %}
+        <a class="btn btn-primary" href="{{ contrato.archivo_pdf.url }}" target="_blank" rel="noopener">Abrir PDF</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
