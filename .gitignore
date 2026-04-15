@@ -1,0 +1,63 @@
+# --- Archivos personales del usuario ---
+.env
+
+# --- Byte-compiled / archivos de caché de Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Entornos Virtuales ---
+.venv/
+venv/
+ENV/
+env/
+virtualenv/
+.env
+
+# --- Distribución / Empaquetado ---
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# --- Logs y Bases de Datos ---
+*.log
+*.sqlite3
+
+# --- Unit test / Cobertura ---
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# --- Jupyter Notebook ---
+.ipynb_checkpoints
+
+# --- Configuraciones de IDEs (VS Code, PyCharm, etc.) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Archivos de sistema ---
+.DS_Store
+Thumbs.db
+
