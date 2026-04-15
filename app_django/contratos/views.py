@@ -1,40 +1,37 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import logging
+
 from django.http import FileResponse
+from django.shortcuts import render, redirect, get_object_or_404
+
 from .forms import ContratoForm
 from .models import Contrato
-import requests
+from .services import llamar_api_ia, guardar_resultado_ia, obtener_resultado_ia
 
-# Create your views here.
+logger = logging.getLogger(__name__)
 
 def subir_contrato(request):
+    """
+        Función que sube un contrato.
+        Parámetros:
+            - request: objeto request de Django
+        Retorna:
+            - render: template subir_contrato.html con el formulario de subida de contrato
+    """
     if request.method == "POST":
         form = ContratoForm(request.POST, request.FILES)
 
         if form.is_valid():
-            contrato = form.save() # guardamos el contrato
+            contrato = form.save()
 
-            # Guardamos el nombre original
             contrato.nombre_original = request.FILES["archivo_pdf"].name
             contrato.save()
 
-            # conectamos con FastAPI 
             with contrato.archivo_pdf.open("rb") as pdf:
-                response = requests.post(
-                    "http://localhost:8001/analizar",
-                    files={"file": pdf}
-                )
+                resultado = llamar_api_ia(pdf)
 
-            # Guardamos el resultado
-            resultado = response.json()
+            guardar_resultado_ia(contrato, resultado)
 
-            #print(f"\n\nEste es el resultado: {resultado}\n\n")
-
-            contrato.resultado_ia = resultado["resultado"]
-            contrato.save()
-
-            pk = contrato.pk
-
-            return redirect("info_contrato", pk=pk)
+            return redirect("info_contrato", pk=contrato.pk)
 
     else:
         form = ContratoForm()
@@ -42,10 +39,34 @@ def subir_contrato(request):
     return render(request, "contratos/subir_contrato.html", {"form": form})
 
 def info_contrato(request, pk: int):
+    """
+        Función que muestra la información del contrato seleccionado.
+        Parámetros:
+            - request: objeto request de Django
+            - pk: id del contrato a mostrar
+        Retorna:
+            - render: template info_contrato.html con el contrato seleccionado
+    """
     contrato = get_object_or_404(Contrato, pk=pk)
-    return render(request, "contratos/info_contrato.html", {"contrato": contrato})
+
+    resultado = obtener_resultado_ia(contrato)
+
+    return render(request, "contratos/info_contrato.html", {
+        "contrato": contrato,
+        "motivo": resultado.get("motivo"),
+        "clausulas_abusivas": resultado.get("clausulas"),
+        "abusivo": resultado.get("abusivo")
+    })
 
 def descargar_pdf(request, pk):
+    """
+        Función que descarga el PDF del contrato seleccionado.
+        Parámetros:
+            - request: objeto request de Django
+            - pk: id del contrato a descargar
+        Retorna:
+            - FileResponse: archivo PDF del contrato
+    """
     contrato = Contrato.objects.get(pk=pk)
 
     return FileResponse(
@@ -53,6 +74,3 @@ def descargar_pdf(request, pk):
         as_attachment=True,
         filename=contrato.nombre_original
     )
-
-def ver_contratos():
-    pass
