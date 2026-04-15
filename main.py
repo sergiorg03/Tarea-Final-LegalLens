@@ -1,4 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
+import PyPDF2
+from io import BytesIO
 
 app = FastAPI()
 
@@ -6,17 +8,17 @@ app = FastAPI()
 def analizar(file: UploadFile = File(...)):
     contenido = file.file.read()
 
-    with open("archivo.pdf", "wb") as f:
-        f.write(contenido)
+    pdf_stream = io.BytesIO(contenido)
 
-    texto_pdf = ''
-    with open("archivo_temp.pdf", "rb") as f:
-        reader = PyPDF2.PdfReader(f)
-        for page in reader.pages:
-            texto_pdf += page.extract_text()
-    
+    reader = PyPDF2.PdfReader(pdf_stream)
+    texto_pdf = ""
+
+    for page in reader.pages:
+        texto_pdf += page.extract_text() or ""
 
     resultado = analizar_contrato(texto_pdf)
 
-    # Devolvemos el resultado de la IA
-    return {'mensaje': "PDF recibido correctamente", 'resultado': resultado.content}
+    return {
+        "mensaje": "PDF recibido correctamente",
+        "resultado": resultado
+    }
