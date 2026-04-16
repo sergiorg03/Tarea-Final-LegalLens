@@ -4,4 +4,4 @@ from .models import Contrato
 class ContratoForm(forms.ModelForm):
     class Meta:
         model = Contrato
-        fields = ["nombre", "archivo_pdf"]
+        fields = ["nombre", "cliente", "tipo", "archivo_pdf"]

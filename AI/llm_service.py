@@ -1,60 +1,57 @@
 import json
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-# Inicializar modelo
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
-    temperature=0,
-    max_output_tokens=500,
-)
+class AgenteIA:
+    def __init__(self):
+        self.llm = ChatGoogleGenerativeAI(
+            model="gemini-2.0-flash", # Versión más estable
+            temperature=0,
+            max_output_tokens=1000,
+        )
 
-def analizar_contrato(texto):
-    prompt = f"""
-        Eres un experto en derecho contractual y protección del consumidor.
+    def analizar(self, texto: str, prompt_especifico: str):
+        prompt_sistema = f"""
+            Eres un experto en derecho contractual. Analiza el contrato proporcionado siguiendo las instrucciones específicas.
+            
+            INSTRUCCIONES ESPECÍFICAS:
+            {prompt_especifico}
 
-        Analiza el siguiente contrato y determina si contiene cláusulas abusivas.
+            DEBES RESPONDER ÚNICAMENTE EN FORMATO JSON VÁLIDO.
+            Formato de respuesta:
+            {{
+                "puntos_clave": ["lista", "de", "puntos"],
+                "banderas_rojas": ["lista", "de", "cláusulas", "peligrosas"],
+                "riesgo_total": "Bajo" | "Medio" | "Crítico"
+            }}
+        """
 
-        Debes responder SIEMPRE en formato JSON válido, sin añadir texto fuera del JSON.
+        prompt_usuario = f"Contrato a analizar:\n{texto}"
+        
+        try:
+            response = self.llm.invoke([
+                ("system", prompt_sistema),
+                ("user", prompt_usuario)
+            ])
+            
+            contenido = response.content.strip()
+            
+            # Limpieza básica para asegurar JSON válido
+            inicio = contenido.find("{")
+            fin = contenido.rfind("}") + 1
+            json_str = contenido[inicio:fin]
+            
+            return json.loads(json_str)
+            
+        except Exception as e:
+            return {
+                "puntos_clave": ["Error al procesar"],
+                "banderas_rojas": [f"Error de conexión: {str(e)}"],
+                "riesgo_total": "Crítico"
+            }
 
-        Formato exacto:
-
-        {{
-        "abusivo": true/false,
-        "clausulas": ["lista de cláusulas abusivas detectadas"],
-        "motivo": "explicación breve"
-        }}
-
-        Reglas:
-        - Si hay cualquier indicio de abuso → abusivo = true
-        - Si no hay evidencia clara → abusivo = false
-        - Máximo 2-3 líneas en el motivo
-        - No inventes información
-        - No escribas nada fuera del JSON
-
-        Contrato:
-        {texto}
-    """
-
-    response = llm.invoke(prompt)
-    texto_respuesta = response.content.strip()
-
-    # Limpiamos la respuesta de la IA por si las moscas
-    inicio = texto_respuesta.find("{")
-    fin = texto_respuesta.rfind("}") + 1
-
-    json_limpio = texto_respuesta[inicio:fin]
-
-    # Lo convertimos a diccionario para evitar errores en Django
-    try:
-        resultado = json.loads(json_limpio)
-    except:
-        resultado = {
-            "abusivo": False,
-            "clausulas": [],
-            "motivo": "Error al procesar la respuesta del modelo"
-        }
-
-    return resultado # Devolvemos el resultado como un diccionario
+# Instancia única para ser reutilizada
+agente = AgenteIA()

@@ -4,19 +4,21 @@ import os
 
 API_URL = os.getenv("API_URL", "http://localhost:8001/analizar")
 
-def llamar_api_ia(pdf_file):
+def llamar_api_ia(contrato):
     try:
-        response = requests.post(
-            API_URL,
-            files={"file": pdf_file},
-            timeout=30
-        )
-
-        print("STATUS:", response.status_code)
-        print("RESPUESTA:", response.text)
+        # Abrimos el archivo para enviarlo
+        with contrato.archivo_pdf.open("rb") as pdf:
+            response = requests.post(
+                API_URL,
+                files={"file": pdf},
+                data={
+                    "tipo": contrato.tipo,
+                    "cliente": contrato.cliente
+                },
+                timeout=60
+            )
 
         response.raise_for_status()
-
         return response.json()
 
     except Exception as e:

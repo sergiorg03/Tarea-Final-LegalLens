@@ -9,6 +9,16 @@ from .services import llamar_api_ia, guardar_resultado_ia, obtener_resultado_ia
 
 logger = logging.getLogger(__name__)
 
+def dashboard(request):
+    """
+        Función que muestra el listado de todos los contratos.
+        Retorna:
+            - render: template dashboard.html con la lista de contratos
+    """
+    contratos = Contrato.objects.all().order_by("-fecha_subida")
+    return render(request, "contratos/dashboard.html", {"contratos": contratos})
+
+
 def subir_contrato(request):
     """
         Función que sube un contrato.
@@ -26,9 +36,8 @@ def subir_contrato(request):
             contrato.nombre_orig_pdf = request.FILES["archivo_pdf"].name
             contrato.save()
 
-            with contrato.archivo_pdf.open("rb") as pdf:
-                resultado = llamar_api_ia(pdf)
-
+            # Llamamos a la API pasando el contrato completo
+            resultado = llamar_api_ia(contrato)
             guardar_resultado_ia(contrato, resultado)
 
             return redirect("info_contrato", pk=contrato.pk)
