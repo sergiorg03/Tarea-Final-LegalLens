@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 import PyPDF2
 from io import BytesIO
+from AI.llm_service import analizar_contrato
 
 app = FastAPI()
 
@@ -8,7 +9,7 @@ app = FastAPI()
 def analizar(file: UploadFile = File(...)):
     contenido = file.file.read()
 
-    pdf_stream = io.BytesIO(contenido)
+    pdf_stream = BytesIO(contenido)
 
     reader = PyPDF2.PdfReader(pdf_stream)
     texto_pdf = ""
@@ -18,7 +19,4 @@ def analizar(file: UploadFile = File(...)):
 
     resultado = analizar_contrato(texto_pdf)
 
-    return {
-        "mensaje": "PDF recibido correctamente",
-        "resultado": resultado
-    }
+    return resultado

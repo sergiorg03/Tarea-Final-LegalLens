@@ -23,7 +23,7 @@ def subir_contrato(request):
         if form.is_valid():
             contrato = form.save()
 
-            contrato.nombre_original = request.FILES["archivo_pdf"].name
+            contrato.nombre_orig_pdf = request.FILES["archivo_pdf"].name
             contrato.save()
 
             with contrato.archivo_pdf.open("rb") as pdf:
@@ -72,5 +72,5 @@ def descargar_pdf(request, pk):
     return FileResponse(
         contrato.archivo_pdf.open("rb"),
         as_attachment=True,
-        filename=contrato.nombre_original
+        filename=contrato.nombre_orig_pdf
     )
