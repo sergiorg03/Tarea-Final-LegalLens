@@ -35,9 +35,9 @@
                 <td>
                     <span class="type-pill">
                         {% if contrato.tipo == "ALQUILER" %}
-                        🏠 Alquiler
+                        Alquiler
                         {% else %}
-                        🔒 NDA
+                        NDA
                         {% endif %}
                     </span>
                 </td>
@@ -46,9 +46,9 @@
                     {% if resultado.motivo == "Sin procesar" %}
                     <span class="badge badge-gray">Pendiente</span>
                     {% elif resultado.abusivo %}
-                    <span class="badge badge-red">🚩 Banderas Rojas</span>
+                    <span class="badge badge-red">Banderas Rojas</span>
                     {% else %}
-                    <span class="badge badge-green">✅ Limpio</span>
+                    <span class="badge badge-green">Limpio</span>
                     {% endif %}
                 </td>
                 <td>

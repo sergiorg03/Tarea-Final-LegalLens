@@ -5,4 +5,5 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("subir/", views.subir_contrato, name="subir_contrato"),
     path("contrato/<int:pk>/", views.info_contrato, name="info_contrato"),
+    path("registro/", views.registro, name="registro"),
 ]

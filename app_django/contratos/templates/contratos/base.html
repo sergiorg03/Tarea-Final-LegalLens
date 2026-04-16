@@ -17,8 +17,18 @@
             <span>LegalLens</span>
           </a>
           <nav class="nav" aria-label="Navegación">
-            <a href="{% url 'dashboard' %}">Panel de Control</a>
-            <a href="{% url 'subir_contrato' %}">Subir contrato</a>
+            {% if user.is_authenticated %}
+              <span class="user-greeting">Hola, <strong>{{ user.username }}</strong></span>
+              <a href="{% url 'dashboard' %}">Panel</a>
+              <a href="{% url 'subir_contrato' %}">Subir</a>
+              <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="link-btn">Cerrar sesión</button>
+              </form>
+            {% else %}
+              <a href="{% url 'login' %}">Iniciar sesión</a>
+              <a href="{% url 'registro' %}" class="btn-sm-primary">Registrarse</a>
+            {% endif %}
           </nav>
         </div>
       </header>

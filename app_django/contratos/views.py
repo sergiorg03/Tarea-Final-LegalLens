@@ -2,13 +2,16 @@ import logging
 
 from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as auth_login
 from .forms import ContratoForm
 from .models import Contrato
 from .services import llamar_api_ia, guardar_resultado_ia, obtener_resultado_ia
 
 logger = logging.getLogger(__name__)
 
+@login_required
 def dashboard(request):
     """
         Función que muestra el listado de todos los contratos.
@@ -19,6 +22,7 @@ def dashboard(request):
     return render(request, "contratos/dashboard.html", {"contratos": contratos})
 
 
+@login_required
 def subir_contrato(request):
     """
         Función que sube un contrato.
@@ -47,6 +51,7 @@ def subir_contrato(request):
 
     return render(request, "contratos/subir_contrato.html", {"form": form})
 
+@login_required
 def info_contrato(request, pk: int):
     """
         Función que muestra la información del contrato seleccionado.
@@ -67,6 +72,7 @@ def info_contrato(request, pk: int):
         "abusivo": resultado.get("abusivo")
     })
 
+@login_required
 def descargar_pdf(request, pk):
     """
         Función que descarga el PDF del contrato seleccionado.
@@ -83,3 +89,18 @@ def descargar_pdf(request, pk):
         as_attachment=True,
         filename=contrato.nombre_orig_pdf
     )
+
+def registro(request):
+    """
+        Vista para el registro de nuevos abogados.
+    """
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)  # Auto-login tras registro
+            return redirect("dashboard")
+    else:
+        form = UserCreationForm()
+    
+    return render(request, "registration/registro.html", {"form": form})
