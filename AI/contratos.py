@@ -3,10 +3,17 @@ from pydantic import BaseModel
 from typing import List
 
 # 1. El "molde" para los datos que devuelve la IA
+class EntidadesExtraidas(BaseModel):
+    nombres: List[str]
+    dni: List[str]
+    fechas: List[str]
+    importes: List[str]
+
 class AnalisisResultado(BaseModel):
     puntos_clave: List[str]
     banderas_rojas: List[str]
     riesgo_total: str  # "Bajo", "Medio", "Crítico"
+    entidades: EntidadesExtraidas
 
 # 2. La Clase Abstracta
 class Contrato(ABC):

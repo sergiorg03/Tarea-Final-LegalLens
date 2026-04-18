@@ -20,12 +20,24 @@ class AgenteIA:
             INSTRUCCIONES ESPECÍFICAS:
             {prompt_especifico}
 
+            ADEMÁS, debes extraer los siguientes datos clave:
+            - Nombres de las partes.
+            - DNIs o pasaportes mencionados.
+            - Fechas importantes (inicio, fin, firma).
+            - Importes económicos (fianzas, mensualidades, multas).
+
             DEBES RESPONDER ÚNICAMENTE EN FORMATO JSON VÁLIDO.
             Formato de respuesta:
             {{
                 "puntos_clave": ["lista", "de", "puntos"],
                 "banderas_rojas": ["lista", "de", "cláusulas", "peligrosas"],
-                "riesgo_total": "Bajo" | "Medio" | "Crítico"
+                "riesgo_total": "Bajo" | "Medio" | "Crítico",
+                "entidades": {{
+                    "nombres": ["nombre1", "nombre2"],
+                    "dni": ["DNI1"],
+                    "fechas": ["fecha1"],
+                    "importes": ["importe1"]
+                }}
             }}
         """
 
