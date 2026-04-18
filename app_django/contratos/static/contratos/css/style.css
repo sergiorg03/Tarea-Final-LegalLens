@@ -359,7 +359,7 @@ button:hover,
   font-style: normal;
 }
 
-/* Formal Status Styles */
+/* Estilo formal del estado */
 .status-formal {
   padding: 16px;
   background: rgba(255, 255, 255, 0.05);
@@ -378,7 +378,50 @@ button:hover,
   font-weight: 600;
 }
 
-/* Dashboard Table & Badges */
+/* mostrar la información en paralelo */
+.report-layout {
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 250px);
+  min-height: 500px;
+}
+
+.report-left {
+  flex: 1;
+  background: #1e1e1e;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.report-right {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Scrollbar Custom */
+.report-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.report-right::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .report-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .report-left {
+    height: 400px;
+  }
+}
+
+/* Tabla de Dashboard */
 .table-container {
   overflow-x: auto;
   margin-top: 8px;
@@ -504,6 +547,7 @@ button:hover,
   max-width: 450px;
   margin: 40px auto;
 }
+
 .auth-form {
   background: var(--panel);
   padding: 32px;
@@ -511,31 +555,37 @@ button:hover,
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
+
 .auth-form p {
   margin-bottom: 20px;
 }
+
 .auth-form p label {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
   color: var(--muted);
 }
+
 .auth-footer {
   text-align: center;
   margin-top: 24px;
   color: var(--muted);
   font-size: 15px;
 }
+
 .auth-footer a {
   color: var(--brand);
   font-weight: 600;
 }
+
 .btn-block {
   width: 100%;
   margin-top: 8px;
   padding: 12px;
   font-size: 16px;
 }
+
 .helptext {
   display: block;
   font-size: 12px;
