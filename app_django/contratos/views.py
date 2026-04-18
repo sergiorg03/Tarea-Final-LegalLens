@@ -1,5 +1,4 @@
 import logging
-
 from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -83,7 +82,8 @@ def descargar_pdf(request, pk):
         Retorna:
             - FileResponse: archivo PDF del contrato
     """
-    contrato = Contrato.objects.get(pk=pk)
+    #contrato = Contrato.objects.get(pk=pk)
+    contrato = get_object_or_404(Contrato, pk=pk)
 
     return FileResponse(
         contrato.archivo_pdf.open("rb"),
@@ -93,7 +93,7 @@ def descargar_pdf(request, pk):
 
 def registro(request):
     """
-        Vista para el registro de nuevos abogados.
+        Vista para el registro de nuevos usuarios.
     """
     if request.method == "POST":
         form = UserCreationForm(request.POST)

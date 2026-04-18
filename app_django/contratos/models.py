@@ -2,12 +2,12 @@ from django.db import models
 import uuid
 import json
 
-# Create your models here.
+# Función para guardar los PDF con un nombre único
 def ruta_pdf(instance, filename):
     extension = filename.split(".")[-1]
     return f"archivos_pdf/archivo_{uuid.uuid4().hex}.{extension}"
 
-
+# Modelo principal para los contratos
 class Contrato(models.Model):
     TIPO_CONTRATO = [
         ("ALQUILER", "Contrato de Alquiler"),
@@ -31,4 +31,4 @@ class Contrato(models.Model):
         try:
             return json.loads(self.resultado_ia)
         except (json.JSONDecodeError, TypeError):
-            return {"abusivo": False, "clausulas": [], "motivo": "Sin procesar"}
+            return {"motivo": "Sin procesar", "riesgo_total": "Bajo"}

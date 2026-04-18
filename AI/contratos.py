@@ -2,20 +2,21 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel
 from typing import List
 
-# 1. El "molde" para los datos que devuelve la IA
+# Definicion de los datos que extraermos del PDF
 class EntidadesExtraidas(BaseModel):
     nombres: List[str]
     dni: List[str]
     fechas: List[str]
     importes: List[str]
 
+# Molde final para la respuesta de la IA
 class AnalisisResultado(BaseModel):
     puntos_clave: List[str]
     banderas_rojas: List[str]
-    riesgo_total: str  # "Bajo", "Medio", "Crítico"
+    riesgo_total: str  # "Bajo", "Medio" o "Critico"
     entidades: EntidadesExtraidas
 
-# 2. La Clase Abstracta
+# Clase base abstracta usando patron Template Method
 class Contrato(ABC):
     def __init__(self, texto: str, cliente: str):
         self.texto = texto
@@ -23,7 +24,7 @@ class Contrato(ABC):
 
     @abstractmethod
     def obtener_prompt_especifico(self) -> str:
-        """Cada subclase dirá qué trampas buscar según su tipo."""
+        # Cada tipo de contrato definira sus propios criterios
         pass
 
     def ejecutar_auditoria(self, agente_ia) -> dict:
@@ -34,26 +35,27 @@ class Contrato(ABC):
         prompt = self.obtener_prompt_especifico()
         return agente_ia.analizar(self.texto, prompt)
 
-# 3. Implementaciones concretas
+# Implementacion para alquileres
 class ContratoAlquiler(Contrato):
     def obtener_prompt_especifico(self) -> str:
         return """
-        Busca específicamente:
-        1. Si la fianza exigida supera el límite legal (1 mes para vivienda).
-        2. Si el contrato obliga al inquilino a pagar reparaciones estructurales o de mantenimiento general (Art. 21 LAU).
-        3. Cláusulas de acceso ilimitado del casero a la vivienda.
+        Busca especificamente:
+        1. Si la fianza exigida supera el limite legal (1 mes).
+        2. Si el contrato obliga al inquilino a pagar reparaciones estructurales (Art. 21 LAU).
+        3. Clausulas de acceso del casero a la vivienda sin aviso.
         """
 
+# Implementacion para NDA
 class ContratoNDA(Contrato):
     def obtener_prompt_especifico(self) -> str:
         return """
-        Busca específicamente:
-        1. Cláusulas de duración infinita o perpetua de la confidencialidad.
-        2. Multas desproporcionadas por filtraciones accidentales (ej: superiores a 100.000€).
-        3. Definiciones de 'Información Confidencial' demasiado amplias que incluyan conocimientos previos del trabajador.
+        Busca especificamente:
+        1. Clausulas de duracion infinita o perpetua.
+        2. Multas desproporcionadas (superiores a 100.000E).
+        3. Definiciones de informacion confidencial demasiado amplias.
         """
 
-# Instancia la clase correcta
+# Fabrica para crear el objeto contrato segun el tipo
 class ContratoFactory:
     @staticmethod
     def crear_contrato(tipo: str, texto: str, cliente: str) -> Contrato:
@@ -62,4 +64,5 @@ class ContratoFactory:
         elif tipo.upper() == "NDA":
             return ContratoNDA(texto, cliente)
         else:
-            raise ValueError(f"Tipo de contrato no soportado: {tipo}")
+            raise ValueError(f"Tipo de contrato desconocido: {tipo}")
+        
