@@ -17,31 +17,45 @@
     <!-- Indicador de Estado -->
     <div class="status-formal">
       <strong>Estado del contrato:</strong> 
-      {% if abusivo %}
-        <span class="text-abusive">Se han detectado posibles cláusulas abusivas</span>
+      {% if riesgo_total == "Crítico" or riesgo_total == "Medio" %}
+        <span class="text-abusive">Riesgo {{ riesgo_total }}: Se recomienda revisión manual</span>
       {% else %}
-        <span class="text-safe">No se han detectado indicios de abuso</span>
+        <span class="text-safe">Riesgo Bajo: No se han detectado indicios graves</span>
       {% endif %}
+    </div>
+
+    <!-- Datos Extraídos (Entidades) -->
+    <div class="result-section" style="margin-top: 20px;">
+      <h4>Datos Clave Extraídos</h4>
+      <table class="table" style="font-size: 0.9em; background: rgba(255,255,255,0.02);">
+        <tr><td><strong>Firmantes:</strong></td><td>{{ entidades.nombres|join:", "|default:"-" }}</td></tr>
+        <tr><td><strong>DNI/ID:</strong></td><td>{{ entidades.dni|join:", "|default:"-" }}</td></tr>
+        <tr><td><strong>Fechas:</strong></td><td>{{ entidades.fechas|join:", "|default:"-" }}</td></tr>
+        <tr><td><strong>Importes:</strong></td><td>{{ entidades.importes|join:", "|default:"-" }}</td></tr>
+      </table>
     </div>
 
     <!-- Resultados en Cuadrícula -->
     <div class="result-grid">
       <div class="result-section">
-        <h4>Resumen del Análisis</h4>
-        <div class="result-content highlight text-wrap">
-          {{ motivo|default:"(Sin resumen disponible todavía)" }}
-        </div>
-        <br>
+        <h4>Resumen y Puntos Clave</h4>
+        <ul class="clause-list">
+          {% for punto in puntos_clave %}
+            <li class="clause-item">{{ punto }}</li>
+          {% empty %}
+            <li class="clause-item muted">Sin información disponible.</li>
+          {% endfor %}
+        </ul>
       </div>
 
-      {% if clausulas_abusivas %}
+      {% if banderas_rojas %}
       <div class="result-section">
-        <h4>Cláusulas Detectadas</h4>
+        <h4>Infracciones (Alertas)</h4>
         <ul class="clause-list">
-          {% for clausula in clausulas_abusivas %}
-            <li class="clause-item">{{ clausula }}</li>
+          {% for bandera in banderas_rojas %}
+            <li class="clause-item text-abusive" style="border-left-color: #ff4d4d;">{{ bandera }}</li>
           {% empty %}
-            <li class="clause-item muted">No se identificaron puntos críticos específicos.</li>
+            <li class="clause-item muted">No se identificaron infracciones.</li>
           {% endfor %}
         </ul>
       </div>

@@ -43,9 +43,9 @@
                 </td>
                 <td>{{ contrato.fecha_subida|date:"d/m/Y H:i" }}</td>
                 <td>
-                    {% if resultado.motivo == "Sin procesar" %}
+                    {% if not resultado or resultado.motivo == "Sin procesar" %}
                     <span class="badge badge-gray">Pendiente</span>
-                    {% elif resultado.abusivo %}
+                    {% elif resultado.riesgo_total == "Crítico" or resultado.banderas_rojas %}
                     <span class="badge badge-red">Banderas Rojas</span>
                     {% else %}
                     <span class="badge badge-green">Limpio</span>

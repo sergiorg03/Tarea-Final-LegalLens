@@ -67,9 +67,10 @@ def info_contrato(request, pk: int):
 
     return render(request, "contratos/info_contrato.html", {
         "contrato": contrato,
-        "motivo": resultado.get("motivo"),
-        "clausulas_abusivas": resultado.get("clausulas"),
-        "abusivo": resultado.get("abusivo")
+        "puntos_clave": resultado.get("puntos_clave"),
+        "banderas_rojas": resultado.get("banderas_rojas"),
+        "riesgo_total": resultado.get("riesgo_total"),
+        "entidades": resultado.get("entidades", {})
     })
 
 @login_required
